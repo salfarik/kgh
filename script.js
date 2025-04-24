@@ -151,79 +151,81 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Показать страницу темы с анимацией
-    function showTopicPage(topic) {
-        mainMenu.classList.add('animate__fadeOut');
-        
-        setTimeout(() => {
-            mainMenu.style.display = 'none';
-            mainMenu.classList.remove('animate__fadeOut');
-            
-            const topicPage = document.createElement('section');
-            topicPage.className = 'topic-page animate__animated animate__fadeIn';
-            topicPage.id = `${topic}-page`;
-            
-            // Генерация карточек уроков
-            const lessonsHTML = topics[topic].lessons.map((lesson, index) => `
-                <div class="lesson-card animate__animated animate__zoomIn animate__delay-${index + 3}s">
-                    <h3>${lesson.title}</h3>
-                    <p>${lesson.description}</p>
-                    <button class="start-lesson-btn">Начать</button>
-                </div>
-            `).join('');
-            
-            topicPage.innerHTML = `
-                <div class="topic-header">
-                    <button class="back-btn-topic animate__animated animate__fadeInLeft">← Назад к темам</button>
-                    <h2 class="animate__animated animate__fadeIn">${topics[topic].icon} ${topics[topic].title}</h2>
-                </div>
-                <p class="animate__animated animate__fadeIn animate__delay-1s">${topics[topic].content}</p>
-                <div class="topic-content animate__animated animate__fadeIn animate__delay-2s">
-                    <div class="lessons-container">
-                        ${lessonsHTML}
-                    </div>
-                </div>
-            `;
-            
-            document.querySelector('main').appendChild(topicPage);
-            
-            // Обработчик кнопки "Назад"
-            topicPage.querySelector('.back-btn-topic').addEventListener('click', function() {
-                topicPage.classList.add('animate__fadeOut');
-                
-                setTimeout(() => {
-                    topicPage.remove();
-                    mainMenu.style.display = 'block';
-                    mainMenu.classList.add('animate__fadeIn');
-                    
-                    setTimeout(() => {
-                        mainMenu.classList.remove('animate__fadeIn');
-                    }, 500);
-                }, 500);
-            });
-            
-            // Обработчики кнопок уроков
-            topicPage.querySelectorAll('.start-lesson-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    if (isLoggedIn) {
-                        this.textContent = 'Урок начат!';
-                        this.classList.add('animate__heartBeat');
-                        
-                        setTimeout(() => {
-                            this.classList.remove('animate__heartBeat');
-                        }, 1500);
-                    } else {
-                        this.textContent = 'Требуется вход!';
-                        this.classList.add('error');
-                        
-                        setTimeout(() => {
-                            this.textContent = 'Начать';
-                            this.classList.remove('error');
-                        }, 1500);
-                    }
-                });
-            });
-        }, 500);
-    }
+	function showTopicPage(topic) {
+		mainMenu.classList.add('animate__fadeOut');
+		
+		setTimeout(() => {
+			mainMenu.style.display = 'none';
+			mainMenu.classList.remove('animate__fadeOut');
+			
+			const topicPage = document.createElement('section');
+			topicPage.className = 'topic-page animate__animated animate__fadeIn';
+			topicPage.id = `${topic}-page`;
+			topicPage.style.display = 'block'; // Добавляем отображение
+			
+			// Генерация карточек уроков
+			const lessonsHTML = topics[topic].lessons.map((lesson, index) => `
+				<div class="lesson-card animate__animated animate__zoomIn animate__delay-${index + 1}s">
+					<h3>${lesson.title}</h3>
+					<p>${lesson.description}</p>
+					<button class="start-lesson-btn">Начать урок</button>
+				</div>
+			`).join('');
+			
+			topicPage.innerHTML = `
+				<div class="topic-header">
+					<button class="back-btn-topic animate__animated animate__fadeInLeft">← Назад к темам</button>
+					<h2 class="animate__animated animate__fadeIn">${topics[topic].icon} ${topics[topic].title}</h2>
+				</div>
+				<div class="topic-description animate__animated animate__fadeIn animate__delay-1s">
+					<p>${topics[topic].content}</p>
+				</div>
+				<div class="lessons-container animate__animated animate__fadeIn animate__delay-2s">
+					<h3>Доступные уроки:</h3>
+					${lessonsHTML}
+				</div>
+			`;
+			
+			document.querySelector('main').appendChild(topicPage);
+			
+			// Обработчик кнопки "Назад"
+			topicPage.querySelector('.back-btn-topic').addEventListener('click', function() {
+				topicPage.classList.add('animate__fadeOut');
+				
+				setTimeout(() => {
+					topicPage.remove();
+					mainMenu.style.display = 'block';
+					mainMenu.classList.add('animate__fadeIn');
+					
+					setTimeout(() => {
+						mainMenu.classList.remove('animate__fadeIn');
+					}, 500);
+				}, 500);
+			});
+			
+			// Обработчики кнопок уроков
+			topicPage.querySelectorAll('.start-lesson-btn').forEach(btn => {
+				btn.addEventListener('click', function() {
+					if (localStorage.getItem('isLoggedIn') === 'true') {
+						this.textContent = 'Урок начат!';
+						this.classList.add('animate__heartBeat');
+						
+						setTimeout(() => {
+							this.classList.remove('animate__heartBeat');
+						}, 1500);
+					} else {
+						this.textContent = 'Требуется вход!';
+						this.classList.add('error');
+						
+						setTimeout(() => {
+							this.textContent = 'Начать урок';
+							this.classList.remove('error');
+						}, 1500);
+					}
+				});
+			});
+		}, 500);
+	}
     
     // Переключение темы
     themeToggle.addEventListener('click', function() {
@@ -458,7 +460,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 loginModal.querySelector('.modal-content').appendChild(successMessage);
                 
-                document.getElementById('continueLoginBtn').addEventListener('click', () => {
+                document.getElementById('continueLogin').addEventListener('click', () => {
                     successMessage.classList.add('animate__zoomOut');
                     
                     setTimeout(() => {
